@@ -18,10 +18,22 @@ export class DataBase{
     fs.writeFile(pathDatabse, JSON.stringify(this.#database));
   }
 
-  select(table){
-    return this.#database[table];
-  }
+  select(table, search){
+    let tasks = this.#database[table] ?? [];
+    if(search){
+      tasks = tasks.filter(row => {
+        return Object.entries(search).some(([key, value]) => {
 
+          console.log(value);
+          if(!value) return true
+
+          return row[key].toLowerCase().includes(value.toLowerCase());
+        });
+      })
+    }
+
+    return tasks;
+  }
 
   insert(table, data){
     const tableTasks = this.#database[table];
