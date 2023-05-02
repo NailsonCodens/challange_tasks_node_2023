@@ -35,6 +35,13 @@ export class DataBase{
     return tasks;
   }
 
+  findById(table, id){
+    const tableTasks = this.#database[table];
+    const task = tableTasks.find((row) => row.id === id);
+
+    return task;
+  }
+
   insert(table, data){
     const tableTasks = this.#database[table];
 
@@ -46,4 +53,50 @@ export class DataBase{
 
     this.#persist();
   }
+
+  update(table, id, data){
+
+    const tableTasks = this.#database[table];
+
+    const task = tableTasks.findIndex((row) => row.id === id);
+
+    if(task > -1){  
+      if(data.title){
+        tableTasks[task].title = data.title;
+      }
+
+      if(data.description){
+        tableTasks[task].description = data.description;
+      }
+  
+      this.#persist();
+    }
+  }
+
+  isCompleted(table, id){
+    const tableTasks = this.#database[table];
+
+    const task = this.findById(table, id);
+
+    const taskIndex = tableTasks.findIndex((row) => row.id === id);
+
+    if(taskIndex > -1){
+      tableTasks[taskIndex].completed_at = task.completed_at === null ? new Date() : null; 
+      this.#persist();
+    }
+  }
+
+  delete(table, id){
+    const tableTasks = this.#database[table];
+
+    const taskIndex = tableTasks.findIndex((row) => row.id === id)
+
+    if(taskIndex > -1){
+      tableTasks.splice(taskIndex, 1);
+
+      this.#persist();
+  
+    }
+  }
+
 };
